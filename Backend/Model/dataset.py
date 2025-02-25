@@ -1,7 +1,9 @@
 import pandas as pd
 from sqlalchemy import create_engine
-from sqlalchemy.orm import Session
 from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.preprocessing import OneHotEncoder
 
 
 df = pd.read_csv('vgchartz-2024.csv', encoding='latin-1')
@@ -18,7 +20,6 @@ cleaned_df = cutdf.dropna(subset=['title', 'console', 'genre', 'critic_score', '
 
 cleaned_df.to_sql('dataset', engine, 'games', if_exists='replace', index=False)
 
-session = Session(engine)
 
 dftable = pd.read_sql_table(
     "dataset",
@@ -33,10 +34,36 @@ dftable = pd.read_sql_table(
     ]
 )
 
-X = dftable.drop(columns=['title', 'total sales'])
 
-hitfloppercentile = dftable['total_sales'].quantile(0.75)
+hitflop_percentile = dftable['total_sales'].quantile(0.75)
 
+dftable['Hit'] = (dftable['total_sales'] >= hitflop_percentile).astype(int)
+
+X = dftable[['console', 'genre', 'critic_score']]
+y = dftable['Hit']
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 42)
+
+model = DecisionTreeClassifier(max_depth = 5, random_state = 42)
+model.fit(X_train, y_train)
+
+
+y_pred = model.predict(X_test)
+print("Classification Report:")
+print(classification_report(y_test, y_pred))
+print("Confusion Matrix:")
+print(confusion_matrix(y_test, y_pred))
+
+
+new_game = {
+    'console': 'PS4',
+    'genre': 'Action',
+    'critic_score': 85
+}
+new_game_df = pd.DataFrame([new_game])
+new_game_df = new_game_df[['console', 'genre', 'critic_score']]
+prediction = model.predict(new_game_df)
+print("Prediction: Hit" if prediction[0] == 1 else "Prediction: Flop")
 
 print(dftable)
 
