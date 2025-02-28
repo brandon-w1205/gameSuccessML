@@ -1,5 +1,6 @@
 'use client'
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import Image from "next/image";
 
 export default function Home() {
   const [step, setStep] = useState(1);
@@ -10,6 +11,19 @@ export default function Home() {
     genre: '',
     critic_score: '',
   });
+  const [consoles, setConsoles] = useState([]);
+  const [genres, setGenres] = useState([]);
+
+  useEffect(() => {
+    fetch('http://localhost:5000/consoles')
+      .then((response) => response.json())
+      .then((data) => setConsoles(data))
+      .catch((error) => console.error('Error fetching consoles:', error));
+    fetch('http://localhost:5000/genres')
+      .then((response) => response.json())
+      .then((data) => setGenres(data))
+      .catch((error) => console.error('Error fetching genres:', error));
+  }, []);
 
   const handleNext = () => {
     if (step < 4) {
@@ -58,37 +72,13 @@ export default function Home() {
     }
   }
 
-  const genres = ['Action', 'Action-Adventure', 'Adventure', 'Shooter', 'Misc', 'Music', 'Platform', 'Puzzle', 'Racing', 'Strategy', 'Fighting', 'Party', 'Role-Playing', 'Simulation', 'Sports', 'Visual Novel'];
-
   const handleGenreClick = (genre) => {
     setFormData({ ...formData, genre });
     handleNext();
   }
-
-  const consoles = ['PlayStation 2', 'PlayStation 3', 'PlayStation 4', 'PlayStation 5', 'Xbox 360', 'Xbox One', 'Wii', 'PC', 'GameBoy Advance', 'DS'];
   
   const handleConsoleClick = (console) => {
-    if (console === 'Xbox 360') {
-      console = 'X360';
-    }
-    if (console === 'Xbox One') {
-      console = 'XOne';
-    }
-    if (console === 'PlayStation 2') {
-      console = 'PS2';
-    }
-    if (console === 'PlayStation 3') {
-      console = 'PS3';
-    }
-    if (console === 'PlayStation 4') {
-      console = 'PS4';
-    }
-    if (console === 'PlayStation 5') {
-      console = 'PS5';
-    }
-    if (console === 'GameBoy Advance') {
-      console = 'GBA';
-    }
+
     setFormData({ ...formData, console });
     handleNext();
   }
@@ -96,6 +86,25 @@ export default function Home() {
   return (
     <div className="grid items-center justify-items-center min-h-screen">
       <h1>Game Success Predictor</h1>
+      <div className="flex flex-col gap-4 text-center">
+        <div>
+          <h1>Data Visualizations</h1>
+        </div>
+        <div className="flex flex-row gap-4">
+          <div className="">
+            <Image src="/genre_distribution.png" alt="Genre Distribution" width={800} height={400} />
+            <h2>Distribution of Game Genres</h2>
+          </div>
+          <div>
+            <Image src="/critic_vs_sales.png" alt="Critic Score vs Total Sales" width={800} height={400} />
+            <h2>Critic Score vs Total Sales</h2>
+          </div>
+          <div>
+            <Image src="/console_distribution.png" alt="Console Distribution" width={800} height={400} />
+            <h2>Distribution of Games Across Consoles</h2>
+          </div>
+        </div>
+      </div>
       <main className="flex flex-col gap-8 row-start-2 items-center pb-50">
         <div className='pb-50'>
             {prediction !== null && (
@@ -112,6 +121,7 @@ export default function Home() {
                 <label>
                   Title:{" "}
                   <input 
+                    className="border rounded-lg"
                     type="text"
                     name="title"
                     value={formData.title}
@@ -128,7 +138,7 @@ export default function Home() {
             {step === 2 && (
               <div>
                 <label>
-                  Genre:
+                  Select a Genre:
                 </label>
                 <div>
                   {genres.map((genre) => (
@@ -148,7 +158,7 @@ export default function Home() {
             {step === 3 && (
               <div>
                 <label>
-                  Console:
+                  Select a Console:
                 </label>
                 <div>
                   {consoles.map((console) => (
@@ -168,8 +178,9 @@ export default function Home() {
             {step === 4 && (
               <div>
                 <label>
-                  Critic Score:{" "} 
+                  Critic Score {"(From 0.0 - 10.0)"}:{" "} 
                   <input 
+                    className="border rounded-lg"
                     type="number"
                     name="critic_score"
                     value={formData.critic_score}
