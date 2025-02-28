@@ -8,15 +8,26 @@ export default function Home() {
     title: '',
     console: '',
     genre: '',
-    critics: '',
+    critic_score: '',
   });
 
   const handleNext = () => {
-    setStep(step + 1);
+    if (step < 4) {
+      setStep(step + 1);
+    }
   }
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    if (name === 'critic_score') {
+      const score = parseFloat(value);
+      if (score > 10.0) {
+        alert('Critic score cannot be greater than 10.0');
+        return;
+      }
+    }
+
     setFormData({ ...formData, [name]: value });
   }
 
@@ -36,21 +47,74 @@ export default function Home() {
 
   }
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (step < 4) {
+        handleNext();
+      } else {
+        handleSubmit(e);
+      }
+    }
+  }
+
+  const genres = ['Action', 'Action-Adventure', 'Adventure', 'Shooter', 'Misc', 'Music', 'Platform', 'Puzzle', 'Racing', 'Strategy', 'Fighting', 'Party', 'Role-Playing', 'Simulation', 'Sports', 'Visual Novel'];
+
+  const handleGenreClick = (genre) => {
+    setFormData({ ...formData, genre });
+    handleNext();
+  }
+
+  const consoles = ['PlayStation 2', 'PlayStation 3', 'PlayStation 4', 'PlayStation 5', 'Xbox 360', 'Xbox One', 'Wii', 'PC', 'GameBoy Advance', 'DS'];
+  
+  const handleConsoleClick = (console) => {
+    if (console === 'Xbox 360') {
+      console = 'X360';
+    }
+    if (console === 'Xbox One') {
+      console = 'XOne';
+    }
+    if (console === 'PlayStation 2') {
+      console = 'PS2';
+    }
+    if (console === 'PlayStation 3') {
+      console = 'PS3';
+    }
+    if (console === 'PlayStation 4') {
+      console = 'PS4';
+    }
+    if (console === 'PlayStation 5') {
+      console = 'PS5';
+    }
+    if (console === 'GameBoy Advance') {
+      console = 'GBA';
+    }
+    setFormData({ ...formData, console });
+    handleNext();
+  }
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+    <div className="grid items-center justify-items-center min-h-screen">
       <h1>Game Success Predictor</h1>
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
+      <main className="flex flex-col gap-8 row-start-2 items-center pb-50">
+        <div className='pb-50'>
+            {prediction !== null && (
+              <div>
+                <h2>Prediction:</h2>
+                <p>{formData.title} will be a {prediction}!</p>
+              </div>
+            )}
+        </div>
         <div>
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             {step === 1 && (
-              <div>
+              <div onKeyDown={handleKeyDown}>
                 <label>
-                  Title:
+                  Title:{" "}
                   <input 
                     type="text"
                     name="title"
                     value={formData.title}
-                    // defaultValue="The Last of Us"
                     onChange={handleChange}
                     required
                   />
@@ -65,18 +129,19 @@ export default function Home() {
               <div>
                 <label>
                   Genre:
-                  <input 
-                    type="text"
-                    name="genre"
-                    value={formData.genre}
-                    // defaultValue="Action-Adventure"
-                    onChange={handleChange}
-                    required
-                  />
                 </label>
-                <button type="button" onClick={handleNext}>
-                  Next
-                </button>
+                <div>
+                  {genres.map((genre) => (
+                    <button 
+                      key={genre} 
+                      type="button" 
+                      onClick={() => handleGenreClick(genre)}
+                      className={`px-4 py-2 rounded transition-all hover:bg-blue-400 hover:text-white active:scale-95`}
+                    >
+                      {genre}
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
 
@@ -84,35 +149,35 @@ export default function Home() {
               <div>
                 <label>
                   Console:
-                  <input 
-                    type="text"
-                    name="console"
-                    value={formData.console}
-                    // defaultValue="PS4"
-                    onChange={handleChange}
-                    required
-                  />
                 </label>
-                <button type="button" onClick={handleNext}>
-                  Next
-                </button>
+                <div>
+                  {consoles.map((console) => (
+                    <button 
+                      key={console} 
+                      type="button" 
+                      onClick={() => handleConsoleClick(console)}
+                      className={`px-4 py-2 rounded transition-all hover:bg-blue-400 hover:text-white active:scale-95`}
+                    >
+                      {console}
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
 
             {step === 4 && (
               <div>
                 <label>
-                  Critic Score:
+                  Critic Score:{" "} 
                   <input 
                     type="number"
-                    name="critics"
-                    value={formData.critics}
-                    // defaultValue="90"
+                    name="critic_score"
+                    value={formData.critic_score}
                     onChange={handleChange}
                     required
                   />
                 </label>
-                <button type="submit">
+                <button type="submit" className={`px-4 py-2 rounded transition-all hover:bg-blue-400 hover:text-white active:scale-95`}>
                   Submit
                 </button>
               </div>
@@ -120,14 +185,7 @@ export default function Home() {
           </form>
         </div>
 
-        <div>
-            {prediction !== null && (
-              <div>
-                <h2>Prediction:</h2>
-                <p>{prediction}</p>
-              </div>
-            )}
-        </div>
+
       </main>
     </div>
   );
