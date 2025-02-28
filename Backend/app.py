@@ -9,11 +9,10 @@ CORS(app)
 @app.route('/submit', methods=['POST'])
 def submit():
     print("Received data:", request.json)
-    data = request.json
+    title = request.json['title']
 
-    required_fields = ['console', 'genre', 'critic_score']
-    if not all(field in data for field in required_fields):
-        return jsonify({'error': 'Missing required fields'}), 400
+    data = request.json
+    data.pop('title', None)
 
     prediction = predicter(data)
 

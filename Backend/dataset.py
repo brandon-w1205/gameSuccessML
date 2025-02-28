@@ -42,7 +42,7 @@ dftable.columns = ['title', 'console', 'genre', 'critic_score', 'total_sales']
 print(dftable.columns)
 
 
-hitflop_percentile = dftable['total_sales'].quantile(0.75)
+hitflop_percentile = dftable['total_sales'].quantile(0.50)
 
 dftable['Hit'] = (dftable['total_sales'] >= hitflop_percentile).astype(int)
 
@@ -79,12 +79,6 @@ print(classification_report(y_test, y_pred))
 print("Confusion Matrix:")
 print(confusion_matrix(y_test, y_pred))
 
-# Providing an example to the model
-# new_game = {
-#     'console': 'PS4',
-#     'genre': 'Action',
-#     'critic_score': 85
-# }
 
 def predicter(new_game):
     # Creates a new DataFrame with the example
