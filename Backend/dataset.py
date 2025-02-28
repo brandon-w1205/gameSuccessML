@@ -80,31 +80,34 @@ print("Confusion Matrix:")
 print(confusion_matrix(y_test, y_pred))
 
 # Providing an example to the model
-new_game = {
-    'console': 'PS4',
-    'genre': 'Action',
-    'critic_score': 85
-}
+# new_game = {
+#     'console': 'PS4',
+#     'genre': 'Action',
+#     'critic_score': 85
+# }
 
-# Creates a new DataFrame with the example
-new_game_df = pd.DataFrame([new_game])
+def predicter(new_game):
+    # Creates a new DataFrame with the example
+    new_game_df = pd.DataFrame([new_game])
 
-# applies the fit from the past fit_transform and just transforms the new_game_df categories into binary values with one hot encoding
-new_gamenum = one_hot_encoder.transform(new_game_df[['console', 'genre']])
+    # applies the fit from the past fit_transform and just transforms the new_game_df categories into binary values with one hot encoding
+    new_gamenum = one_hot_encoder.transform(new_game_df[['console', 'genre']])
 
-# creates a new data frame with the new_gamenum binary values but with categories matching "console" and "genre" as columns
-new_gamenum_df = pd.DataFrame(new_gamenum, columns = one_hot_encoder.get_feature_names_out(['console', 'genre']))
+    # creates a new data frame with the new_gamenum binary values but with categories matching "console" and "genre" as columns
+    new_gamenum_df = pd.DataFrame(new_gamenum, columns = one_hot_encoder.get_feature_names_out(['console', 'genre']))
 
-# Adds the critic score to the prior dataframe while dropping the old index
-newgame_fin = pd.concat([new_game_df[['critic_score']].reset_index(drop = True), new_gamenum_df], axis = 1)
+    # Adds the critic score to the prior dataframe while dropping the old index
+    newgame_fin = pd.concat([new_game_df[['critic_score']].reset_index(drop = True), new_gamenum_df], axis = 1)
 
-# Adds a fail-safe in case the prior commands do not change the column names into strings
-newgame_fin.columns = newgame_fin.columns.astype(str)
+    # Adds a fail-safe in case the prior commands do not change the column names into strings
+    newgame_fin.columns = newgame_fin.columns.astype(str)
 
-# Predicts the result of the new values inputted with the trained model
-prediction = model.predict(newgame_fin)
+    # Predicts the result of the new values inputted with the trained model
+    prediction = model.predict(newgame_fin)
 
-# Informs the user if the prediction is a hit or not
-print("Prediction: Hit" if prediction[0] == 1 else "Prediction: Flop")
-
+    # Informs the user if the prediction is a hit or not
+    if prediction[0] == 1:
+        return "Hit"
+    else:
+        return "Flop"
 

@@ -1,9 +1,9 @@
 'use client'
-import Image from "next/image";
 import { useState } from "react";
 
 export default function Home() {
   const [step, setStep] = useState(1);
+  const [prediction, setPrediction] = useState(null);
   const [formData, setFormData] = useState({
     title: '',
     console: '',
@@ -23,7 +23,7 @@ export default function Home() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const response = await fetch('/api/submit', {
+    const response = await fetch('http://localhost:5000/submit', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -31,11 +31,14 @@ export default function Home() {
       body: JSON.stringify(formData),
     });
 
+    const data = await response.json();
+    setPrediction(data.prediction);
+
   }
 
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <h1>Game Success Predicter</h1>
+      <h1>Game Success Predictor</h1>
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
         <div>
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -115,6 +118,15 @@ export default function Home() {
               </div>
             )}
           </form>
+        </div>
+
+        <div>
+            {prediction !== null && (
+              <div>
+                <h2>Prediction:</h2>
+                <p>{prediction}</p>
+              </div>
+            )}
         </div>
       </main>
     </div>
