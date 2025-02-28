@@ -85,10 +85,17 @@ export default function Home() {
 
   return (
     <div className="grid items-center justify-items-center min-h-screen">
+      <head>
+        <title>Game Success Predictor</title>
+      </head> 
       <h1>Game Success Predictor</h1>
       <div className="flex flex-col gap-4 text-center">
         <div>
           <h1>Data Visualizations</h1>
+        </div>
+        <div className="">
+          <Image src="/decision_tree.png" alt="Decision Tree Distribution" width={1920} height={400} />
+          <h2>Distribution of Game Genres</h2>
         </div>
         <div className="flex flex-row gap-4">
           <div className="">
