@@ -1,9 +1,11 @@
 import pandas as pd
+import matplotlib.pyplot as plt
 from sqlalchemy import create_engine
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.preprocessing import OneHotEncoder
+
 
 
 
@@ -79,6 +81,42 @@ print(classification_report(y_test, y_pred))
 print("Confusion Matrix:")
 print(confusion_matrix(y_test, y_pred))
 
+genre_types = dftable.groupby(by='genre').size()
+plot = genre_types.plot.bar(x='Genre', ylabel='Count', color='blue')
+
+genre_counts = dftable['genre'].value_counts()
+console_counts = dftable['console'].value_counts()
+
+genre_counts.plot(kind='bar', color='skyblue')
+console_counts.plot(kind='bar', color='orange')
+
+# Save the plots as images
+plt.figure(figsize=(10, 6))
+genre_counts.plot(kind='bar', color='skyblue')
+plt.title('Distribution of Game Genres')
+plt.xlabel('Genre')
+plt.ylabel('Number of Games')
+plt.xticks(rotation=45)
+plt.savefig('../frontend/public/genre_distribution.png')
+plt.close()
+
+plt.figure(figsize=(10, 6))
+plt.scatter(dftable['critic_score'], dftable['total_sales'], alpha=0.5, color='green')
+plt.title('Critic Score vs Total Sales')
+plt.xlabel('Critic Score')
+plt.ylabel('Total Sales (in millions)')
+plt.grid(True)
+plt.savefig('../frontend/public/critic_vs_sales.png')
+plt.close()
+
+plt.figure(figsize=(10, 6))
+console_counts.plot(kind='bar', color='orange')
+plt.title('Distribution of Games Across Consoles')
+plt.xlabel('Console')
+plt.ylabel('Number of Games')
+plt.xticks(rotation=45)
+plt.savefig('../frontend/public/console_distribution.png')
+plt.close()
 
 def predicter(new_game):
     # Creates a new DataFrame with the example

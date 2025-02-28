@@ -1,10 +1,14 @@
 from flask import Flask, request, jsonify
-from sklearn.preprocessing import StandardScaler
+import pandas as pd
 from dataset import predicter 
 from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app)
+
+df = pd.read_csv('vgchartz-2024.csv', encoding='latin-1')
+specific_columns = ['title', 'console', 'genre', 'critic_score', 'total_sales']
+dftable = df[specific_columns].dropna()
 
 @app.route('/submit', methods=['POST'])
 def submit():
@@ -17,6 +21,17 @@ def submit():
     prediction = predicter(data)
 
     return jsonify({'message': 'Prediction received successfully', 'prediction': prediction})
+
+
+@app.route('/consoles', methods=['GET'])
+def get_consoles():
+    unique_consoles = dftable['console'].unique().tolist()
+    return jsonify(unique_consoles)
+
+@app.route('/genres', methods=['GET'])
+def get_genres():
+    unique_genres = dftable['genre'].unique().tolist()
+    return jsonify(unique_genres)
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
