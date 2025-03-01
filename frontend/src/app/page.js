@@ -14,6 +14,12 @@ export default function Home() {
   const [consoles, setConsoles] = useState([]);
   const [genres, setGenres] = useState([]);
 
+  const [isEnlarged, setIsEnlarged] = useState(false);
+
+  const toggleEnlarge = () => {
+    setIsEnlarged(!isEnlarged);
+  };
+
   useEffect(() => {
     // fetch('http://localhost:5000/consoles')
     fetch('https://gamesuccessml.onrender.com/consoles')
@@ -120,8 +126,8 @@ export default function Home() {
           </div>
         </div>
         <div className="flex justify-center">
-          <div>
-            <Image src="/decision_tree.png" alt="Decision Tree Distribution" width={1366} height={400} />
+          <div onClick={toggleEnlarge} style={{ cursor: 'pointer' }}>
+            <Image src="/decision_tree.png" alt="Decision Tree Distribution" width={isEnlarged ? 1600 : 1366} height={isEnlarged ? 800 : 400} className={isEnlarged ? "enlarged" : ""} />
             <h2>Decision Tree Distribution</h2>
           </div>
         </div>
