@@ -107,7 +107,7 @@ export default function Home() {
     <div className="grid items-center justify-items-center min-h-screen">
       <title>Game Success Predictor</title>
       <h1>Game Success Predictor</h1>
-      <div className="flex flex-col gap-4 text-center">
+      <div className="flex flex-col gap-4 text-center mt-[-60px]">
         <div>
           <h1>Data Visualizations</h1>
         </div>
@@ -127,15 +127,15 @@ export default function Home() {
         </div>
         <div className="flex justify-center">
           <div onClick={toggleEnlarge} style={{ cursor: 'pointer' }}>
-            <Image src="/decision_tree.png" alt="Decision Tree Distribution" width={isEnlarged ? 1600 : 1366} height={isEnlarged ? 800 : 400} className={isEnlarged ? "enlarged" : ""} />
+            <Image src="/decision_tree.png" alt="Decision Tree Distribution" width={1366} height={400} className={isEnlarged ? "enlarged" : ""} />
             <h2>Decision Tree Distribution</h2>
           </div>
         </div>
       </div>
       <main className="flex flex-col gap-8 row-start-2 items-center pb-50">
-        <div className='pb-50'>
+        <div className='pb-10'>
             {prediction !== null && (
-              <div>
+              <div className="pt-20">
                 <h2>Prediction:</h2>
                 <p>{formData.title} will be a {prediction}!</p>
               </div>
