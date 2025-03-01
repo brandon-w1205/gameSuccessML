@@ -86,6 +86,17 @@ export default function Home() {
     handleNext();
   }
 
+  const handleBegin = () => {
+    setStep(1);
+    setFormData({
+      title: '',
+      console: '',
+      genre: '',
+      critic_score: '',
+    });
+    setPrediction(null);
+  }
+
   return (
     <div className="grid items-center justify-items-center min-h-screen">
       <head>
@@ -201,6 +212,11 @@ export default function Home() {
                 <button type="submit" className={`px-4 py-2 rounded transition-all hover:bg-blue-400 hover:text-white active:scale-95`}>
                   Submit
                 </button>
+                <div>
+                  <button type="button" onClick={handleBegin} className={`px-4 py-2 rounded transition-all hover:bg-blue-400 hover:text-white active:scale-95`}>
+                    Back to Beginning
+                  </button>
+                </div>
               </div>
             )}
           </form>
