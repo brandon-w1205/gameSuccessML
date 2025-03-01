@@ -1,19 +1,38 @@
+import os
 import pandas as pd
 import matplotlib.pyplot as plt
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, inspect, text
+from sqlalchemy.orm import Session
 from sklearn.model_selection import train_test_split
-from sklearn.tree import DecisionTreeClassifier
+from sklearn.tree import DecisionTreeClassifier, plot_tree
 from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.preprocessing import OneHotEncoder
+from dotenv import load_dotenv
 
 
-
+load_dotenv()
 
 df = pd.read_csv('vgchartz-2024.csv', encoding='latin-1')
 
-DATABASE_URI = 'postgresql+psycopg2://postgres:postgres@localhost:5432/gamesuccessml'
+# DATABASE_URL = 'postgresql+psycopg2://postgres:postgres@localhost:5432/gamesuccessml'
 
-engine = create_engine(DATABASE_URI)
+USER = os.getenv("user")
+PASSWORD = os.getenv("password")
+HOST = os.getenv("host")
+PORT = os.getenv("port")
+DBNAME = os.getenv("dbname")
+
+DATABASE_URL = f"postgresql+psycopg2://{USER}:{PASSWORD}@{HOST}:{PORT}/{DBNAME}?sslmode=require"
+
+engine = create_engine(DATABASE_URL)
+# session = Session(engine)
+# session.rollback()
+
+inspector = inspect(engine)
+if 'games' not in inspector.get_schema_names():
+    with engine.connect() as connection:
+        connection.execute(text("CREATE SCHEMA games"))
+        connection.commit() 
 
 specific_columns = ['title', 'console', 'genre', 'critic_score', 'total_sales']
 
@@ -44,7 +63,7 @@ dftable.columns = ['title', 'console', 'genre', 'critic_score', 'total_sales']
 print(dftable.columns)
 
 
-hitflop_percentile = dftable['total_sales'].quantile(0.50)
+hitflop_percentile = dftable['total_sales'].quantile(0.75)
 
 dftable['Hit'] = (dftable['total_sales'] >= hitflop_percentile).astype(int)
 
@@ -68,7 +87,7 @@ Xnum = pd.concat([X[['critic_score']].reset_index(drop = True), X_df], axis=1)
 X_train, X_test, y_train, y_test = train_test_split(Xnum, y, test_size = 0.25, random_state = 42)
 
 # initializes the decision tree and give a maximum depth to the tree
-model = DecisionTreeClassifier(max_depth = 5, random_state = 96)
+model = DecisionTreeClassifier(max_depth = 6, random_state = 96)
 # Trains the model using the training split
 model.fit(X_train, y_train)
 
@@ -116,6 +135,19 @@ plt.xlabel('Console')
 plt.ylabel('Number of Games')
 plt.xticks(rotation=45)
 plt.savefig('../frontend/public/console_distribution.png')
+plt.close()
+
+plt.figure(figsize=(70, 30))
+plot_tree(
+    model,
+    feature_names=Xnum.columns,
+    class_names=['Flop', 'Hit'],
+    filled=True,
+    rounded=True,
+    fontsize=10
+)
+plt.title('Decision Tree Visualization')
+plt.savefig('../frontend/public/decision_tree.png')
 plt.close()
 
 def predicter(new_game):
