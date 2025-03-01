@@ -15,11 +15,13 @@ export default function Home() {
   const [genres, setGenres] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:5000/consoles')
+    // fetch('http://localhost:5000/consoles')
+    fetch('https://gamesuccessml.onrender.com/consoles')
       .then((response) => response.json())
       .then((data) => setConsoles(data))
       .catch((error) => console.error('Error fetching consoles:', error));
-    fetch('http://localhost:5000/genres')
+    // fetch('http://localhost:5000/genres')
+    fetch('https://gamesuccessml.onrender.com/genres')
       .then((response) => response.json())
       .then((data) => setGenres(data))
       .catch((error) => console.error('Error fetching genres:', error));
@@ -48,7 +50,8 @@ export default function Home() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const response = await fetch('http://localhost:5000/submit', {
+    // const response = await fetch('http://localhost:5000/submit', {
+    const response = await fetch('https://gamesuccessml.onrender.com/submit', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
