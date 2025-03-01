@@ -13,6 +13,8 @@ export default function Home() {
   });
   const [consoles, setConsoles] = useState([]);
   const [genres, setGenres] = useState([]);
+  const url = 'https://gamesuccessml.onrender.com/';
+  const interval = 600000;
 
   useEffect(() => {
     // fetch('http://localhost:5000/consoles')
@@ -85,6 +87,24 @@ export default function Home() {
     setFormData({ ...formData, console });
     handleNext();
   }
+
+  function reloadSite() {
+    fetch(url)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP issue with status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log(`Page load on ${new Date().toLocaleString()}`, data);
+      })
+      .catch(error => {
+        console.error(`Error on page load at ${new Date().toLocaleString()}`, error);
+      });
+  }
+
+  setInterval(reloadSite, interval);
 
   return (
     <div className="grid items-center justify-items-center min-h-screen">
