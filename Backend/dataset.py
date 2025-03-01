@@ -2,7 +2,6 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 from sqlalchemy import create_engine, inspect, text
-from sqlalchemy.orm import Session
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier, plot_tree
 from sklearn.metrics import classification_report, confusion_matrix
@@ -14,8 +13,6 @@ load_dotenv()
 
 df = pd.read_csv('vgchartz-2024.csv', encoding='latin-1')
 
-# DATABASE_URL = 'postgresql+psycopg2://postgres:postgres@localhost:5432/gamesuccessml'
-
 USER = os.getenv("user")
 PASSWORD = os.getenv("password")
 HOST = os.getenv("host")
@@ -25,8 +22,6 @@ DBNAME = os.getenv("dbname")
 DATABASE_URL = f"postgresql+psycopg2://{USER}:{PASSWORD}@{HOST}:{PORT}/{DBNAME}?sslmode=require"
 
 engine = create_engine(DATABASE_URL)
-# session = Session(engine)
-# session.rollback()
 
 inspector = inspect(engine)
 if 'games' not in inspector.get_schema_names():
