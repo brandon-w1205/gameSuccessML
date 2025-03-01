@@ -10,6 +10,10 @@ df = pd.read_csv('vgchartz-2024.csv', encoding='latin-1')
 specific_columns = ['title', 'console', 'genre', 'critic_score', 'total_sales']
 dftable = df[specific_columns].dropna()
 
+@app.route('/')
+def index():
+    return "Hello, World!"
+
 @app.route('/submit', methods=['POST'])
 def submit():
     print("Received data:", request.json)
