@@ -33,5 +33,5 @@ def get_genres():
     unique_genres = dftable['genre'].unique().tolist()
     return jsonify(unique_genres)
 
-if __name__ == '__main__':
-    app.run(port=5000, debug=True)
+# if __name__ == '__main__':
+#     app.run(port=5000, debug=True)
