@@ -128,7 +128,7 @@ export default function Home() {
         <div className="flex justify-center">
           <div onClick={toggleEnlarge} style={{ cursor: 'pointer' }}>
             <Image src="/decision_tree.png" alt="Decision Tree Distribution" width={1366} height={400} className={isEnlarged ? "enlarged" : ""} />
-            <h2>Decision Tree Distribution</h2>
+            <h2>Decision Tree Distribution {"(Click the image to enlarge)"}</h2>
           </div>
         </div>
       </div>
