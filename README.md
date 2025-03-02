@@ -35,3 +35,5 @@ How to use the Application:
 6. Optional: Click on the Decision Tree Distribution to enlarge the image. Click on it again to reduce the image to its normal size.
 
 Note: Some visualizations may not be rendered immediately upon entering the website. This is due to the backend needing to process the decision tree. Please wait a few seconds for the images to load.
+
+This project was built with a frontend consisting of Next.js and TailwindCSS along with a backend consisting of a PostgreSQL database and Python with libraries such as scikit-learn, matplotlib, SQLalchemy, psycopg2, and Flask.
