@@ -120,10 +120,10 @@ export default function Home() {
             <Image src="/critic_vs_sales.png" alt="Critic Score vs Total Sales" width={800} height={400} />
             <h2>Critic Score vs Total Sales</h2>
           </div>
-          {/* <div>
+          <div>
             <Image src="/console_distribution.png" alt="Console Distribution" width={800} height={400} />
             <h2>Distribution of Games Across Consoles</h2>
-          </div> */}
+          </div>
         </div>
         <div className="flex justify-center">
           <div onClick={toggleEnlarge} style={{ cursor: 'pointer' }}>
