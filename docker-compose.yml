@@ -1,0 +1,49 @@
+services:
+  nextapp:
+    container_name: nextapp
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    environment:
+      - API_URL=http://localhost:5000/
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+      - /app/frontend/node_modules
+
+  flaskapp:
+    container_name: flaskapp
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    ports:
+      - 5000:5000
+    restart: always
+    # env_file:
+    #   - ./Backend/.env
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres
+    depends_on:
+      - db
+      - nextapp
+    volumes:
+      - .:/app
+
+  db:
+    container_name: db
+    image: postgres:15
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
+    driver: local
