@@ -20,7 +20,11 @@ HOST = os.getenv("host")
 PORT = os.getenv("port")
 DBNAME = os.getenv("dbname")
 
-DATABASE_URL = f"postgresql+psycopg2://{USER}:{PASSWORD}@{HOST}:{PORT}/{DBNAME}?sslmode=require"
+if not all([USER, PASSWORD, HOST, PORT, DBNAME]):
+    DATABASE_URL = "postgresql://postgres:postgres@db:5432/postgres"
+else:
+    DATABASE_URL = f"postgresql+psycopg2://{USER}:{PASSWORD}@{HOST}:{PORT}/{DBNAME}?sslmode=require"
+
 
 engine = create_engine(DATABASE_URL, poolclass=NullPool)
 
